@@ -3,7 +3,7 @@ using namespace std;
 class Solution{
     public:
     void SubsetSum(int ind,int sum,vector<int>&arr,int N,vector<int>&sumSubset){
-        if (ind==1){
+        if (ind==N){
             sumSubset.push_back(sum);
             return;
 
@@ -21,6 +21,8 @@ vector<int>subsetSums(vector<int>arr,int N){
     SubsetSum(0,0,arr,N,sumSubset);
     sort(sumSubset.begin(),sumSubset.end());
     return sumSubset;}
+};
+
 int main() {
     Solution sol;
 
@@ -43,4 +45,3 @@ int main() {
     return 0;
 
 }    
-};
