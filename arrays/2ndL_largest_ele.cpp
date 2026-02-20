@@ -17,3 +17,14 @@ int secondLargest(vector<int>&a,int n){
     return slargest;
     
 }
+
+int main() {
+    vector<int> arr = {12, 35, 1, 10, 34, 1};
+    int n = arr.size();
+    int sL = secondLargest(arr, n);
+    
+    cout << "The second largest element is: " << sL << endl;
+
+    return 0;
+
+}
