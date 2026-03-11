@@ -1,0 +1,78 @@
+The Bad Way (Junior Engineer):
+Imagine you are writing the checkout code for Amazon . You write this :
+
+###########################
+
+if (payment_method=="UPI"){
+    // 50  Lines of UPI Logic 
+
+} else if (payment_method =="CreditCard"){
+    //50 lines of Card Logic 
+
+} else if (payment_method== "Paypal"){
+    //50 Lines of Paypal Logic
+
+}
+
+###########################
+
+Why this fails FAANG interviews : Every time Amazon Adds a new payment 
+method like (Apple pay or Crypto),you have to open this ccore file , modify the if-else block , and risk breaking the enitre 
+checkout system.
+
+###########################
+
+THE FAANG WAY:(Senior Engineer): Polymorphism
+
+Insted of massive if-else blocks, we use Polymorphism (which literally means"many forms". )
+
+1. We create a master blueprint called (Payment).We make it Abstract , meaning you can't actually use it 
+directly . It just Exists to lay down a strict rule :"Anyone who claims to be a payment method MUST have a 
+(ProcessPayment()) function ."
+
+2. we create separate , isolated classes for (UPI) ,and (Credit Card) that Inherit from (Payment).
+3. The mian checkout system just calls (ProcessPayment()).It doesn't care if it's UPI or a Card.
+The object itself knows what to do!If Amazon adds Apple Pay tommorow , you just write an (ApplePay) 
+class . You never touch the Core check out code . That is the 
+"Open for Extension , Closed for Modification"rule.
+
+###########################
+
+The C++ Syntax (How it Works)
+1. The Abstract Base Class (The Parent)
+In C++ , putting =0 at the end of a virtual function makes it a strict rule.
+The parent says , "I won't write the code for this , the child MUST write it."
+
+###########################
+
+class Payment(
+    protected: (similar to private , but children are allowed to see it.)
+        double amount;
+    public :
+    Payment (double amt){
+        amount =amt;
+    }    
+    virtual void ProcessPayment()=0; //Strict Rule 
+
+);
+###########################
+
+2. The Child Class (Inheritance)
+To make UPIPayment inherit from Payment, we use : public Payment.
+Because the parent Payment needs an amount to be created, the child constructor must pass that value up to the parent using : Payment(amt).
+###########################
+class UPIPayment : public Payment {
+private:
+    string upi_id;
+public:
+    // Take both inputs, but hand 'amt' up to the parent!
+    UPIPayment(double amt, string id) : Payment(amt) {
+        upi_id = id;
+    }
+
+    // Fulfilling the strict rule!
+    void processPayment() {
+        cout << "Processing Rs." << amount << " via UPI: " << upi_id << endl;
+    }
+};
+###########################
