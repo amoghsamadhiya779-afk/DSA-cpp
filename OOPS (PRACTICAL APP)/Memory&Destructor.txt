@@ -1,0 +1,10 @@
+In Python or Java, when you are done using an object, a "Garbage Collector" automatically deletes it and frees up the RAM.
+
+C++ does not have a Garbage Collector. If you create an object in C++ using the new keyword (which puts it on the "Heap" memory), it will stay in your RAM forever until your computer crashes... unless you manually destroy it.
+This is called a Memory Leak, and it is the #1 reason candidates fail FAANG C++ interviews.
+
+To handle this, C++ uses Destructors.
+
+A Constructor ClassName() runs when the object is born.
+
+A Destructor ~ClassName() runs the exact moment the object dies.

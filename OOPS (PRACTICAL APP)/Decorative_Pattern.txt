@@ -1,0 +1,79 @@
+The Problem :"Class Explosion "
+Imagine you are an engineer at Spotify . You have a basic audio class that strams music
+
+
+###########################################
+class AudioStream{
+    virtual void play () {cout <<"Playing basic audio..}
+};
+###########################################
+
+But the product team wants new features.
+1. Users want High-Res Audio . So,you create HighResAudioStream which inherits from AudioStream.
+
+2.User wants Spatial (3D) Audio :So, you create SpatialAudioStream.
+
+Then , a user puts on their headphone and wants to listen After Hours
+with both High-Res and Spatial Audio.
+What do you do? Do you create a HighResSpatialAudioStream class?
+What if marketing adds an "Ad-Fee" tier? Do you create an AdFreeHighResSpatialAudioStream class?
+
+If you use inheritance to add features,your codebase will multiply into hundreds of useless classes.
+This is called Class Explosion.
+
+
+The Question:
+If you use the Decorator Pattern to design the FileProcessor system, what exactly becomes the "Base Component" (the innermost doll), and what become the "Concrete Decorators" (the wrappers)? Explain the execution order if a file needs to be both decrypted and decompressed before writing to data/processed.
+
+Think it through. How do you structure the dolls?
+1. The Parent Interface (The Abstract Component)
+You started with DataFetcher. Let's call the interface IDataReader. Every single class in this system—whether it reads, decrypts, or unzips—must inherit from IDataReader and have a read() function.
+
+2. The Innermost Doll (The Concrete Component)
+The core job is just getting bytes off the hard drive from the raw/data folder.
+
+Class: BaseFileReader
+
+Job: Opens the file path and returns the raw bytes. It doesn't know what encryption or compression is. It just reads.
+
+3. The Wrappers (The Concrete Decorators)
+These classes take an IDataReader pointer in their constructor, get the data from it, and then modify it.
+
+Wrapper 1: DecryptorDecorator (Takes encrypted bytes, returns plain bytes)
+
+Wrapper 2: DecompressorDecorator (Takes zipped bytes, returns unzipped bytes)
+
+🔄 The Execution Order (The Magic)
+If a file in your pipeline is both encrypted (AES-256) and compressed (ZIP), the order of operations matters perfectly. You cannot unzip a file before you decrypt it!
+
+Here is how you stack the nesting dolls in your main pipeline script:
+
+C++
+// 1. The Core: Just reads the raw, encrypted, zipped bytes from disk
+unique_ptr<IDataReader> pipeline = make_unique<BaseFileReader>("raw/data/dataset.zip.enc");
+
+// 2. Wrap it in the Decryptor
+// The Decryptor asks the BaseFileReader for the bytes, then decrypts them.
+pipeline = make_unique<DecryptorDecorator>(move(pipeline));
+
+// 3. Wrap it in the Decompressor
+// The Decompressor asks the Decryptor for bytes, then unzips them.
+pipeline = make_unique<DecompressorDecorator>(move(pipeline));
+
+// 4. Execution!
+string final_clean_data = pipeline->read(); 
+How the read() call flows:
+
+You call read() on the outside doll (Decompressor).
+
+Decompressor says: "Hold on, I need the data first." It calls read() on the doll inside it (Decryptor).
+
+Decryptor says: "Hold on, I need the raw data." It calls read() on the innermost doll (BaseFileReader).
+
+BaseFileReader reads the hard drive and passes the bytes up.
+
+Decryptor decrypts the bytes and passes them up.
+
+Decompressor unzips the bytes and hands the final clean CSV data to your ML algorithm.
+
+

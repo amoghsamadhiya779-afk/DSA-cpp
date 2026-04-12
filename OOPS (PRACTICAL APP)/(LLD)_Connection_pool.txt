@@ -1,0 +1,6 @@
+FAANG LLD (Connection Pool)
+It's time to level this up to an actual Low-Level Design (LLD) interview question.
+
+Real servers (like Netflix or Amazon) don't just open one database connection. They open a batch of them at startup and keep them ready. This is called a Connection Pool.
+
+If your ConnectionPool class gets destroyed, it must destroy all the connections inside it, or else you leak massive amounts of memory.

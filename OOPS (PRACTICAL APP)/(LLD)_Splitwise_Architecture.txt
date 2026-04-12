@@ -1,0 +1,35 @@
+💸 LLD Block: The Splitwise Architecture
+Designing Splitwise is one of the most common Low-Level Design questions at Amazon and Uber.
+The interviewer doesn't care if you know how to build a User class.
+They care about the core algorithmic engine: Debt Simplification.
+
+
+🛑 The Problem
+If Alice owes Bob $10, Bob owes Charlie $10, and Charlie owes Alice $10,
+a naive system will tell them to make three separate bank transfers.
+A Senior Engineer realizes that $10 is moving in a circle. The optimal number of transactions is Zero.
+
+
+🧱 The Architecture (How to solve it in $O(N \log N)$)
+
+Step 1: The HashMap (Net Balances)
+You do not track individual IOU edges between people. 
+You reduce everyone to a single number: their Net Balance.
+If Alice pays $30 for a meal with Bob and Charlie ($10 each).
+Alice's Net Balance: $+20$ (She should receive money)
+Bob's Net Balance: $-10$ (He owes money)
+Charlie's Net Balance: $-10$ (He owes money)
+Sanity Check: The sum of all net balances must always equal $0$.
+
+
+Step 2: The Two Heaps (Max-Heaps)
+You take the HashMap and split the users into two Priority Queues (Max-Heaps):
+Creditors (Receivers): Ordered by who is owed the most money.
+Debtors (Payers): Ordered by who owes the most money.
+
+
+Step 3: The Greedy Settlement AlgorithmYou pop the top person off both heaps.
+The biggest Debtor pays the biggest Creditor.
+You subtract the settled amount from both their balances.
+If someone's balance is not yet zero, you push them back into the heap.
+You repeat this until both heaps are empty.
