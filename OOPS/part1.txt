@@ -1,0 +1,25 @@
+  #TOPIC 1 
+   Classes and Objects
+A class is a  blueprint for creating objects.It encapsulates
+.  DATA members(attributes) - state if the object.
+.  Member function(methods)-behaviour of the object.
+
+class Classname {
+    private:
+    int age_;// Data Member
+
+    public :
+      ClassName(int a) :age_(a){}    //Constructor
+      void display; { }// Member Funciton
+
+};
+
+
+
+Concept                      Definition
+
+class          Template / blueprint for creating Objects
+Object         Instance of a class in memory
+State          Values of data member at any point.
+Behaviour      Actions performed by member function.
+Identity       Each object has unique address in memory.
